@@ -39,8 +39,8 @@ const LoginForm = () => {
 
       console.log(data);
       Auth.login(data.login.token);
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      console.error(error);
     }
 
     // clear form values
