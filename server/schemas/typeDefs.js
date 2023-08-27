@@ -18,7 +18,7 @@ type Auth{
     token: ID!
     user: User
 }
-input BookInput{
+input bookInput{
     bookId:String!
     authors: [String]
     description: String
@@ -35,11 +35,10 @@ type Query{
 type Mutation{
     login(email:String, password:String): Auth
     addUser(username:String, email:String, password:String): Auth
-    saveBook(bookData:BookInput): User
+    saveBook(bookData: bookInput): User
     removeBook(bookId:String): User
 }
 
 
 `;
 module.exports = typeDefs
-		

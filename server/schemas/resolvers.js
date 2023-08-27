@@ -1,23 +1,24 @@
-const { resolvers } = require('.');
+// const { resolvers } = require('.');
 const { User } = require('../models');
 const { signToken, AuthenticationError } = require('../utils/auth')
 const resolvers = {
     Query: {
         me: async (parent, args, context) => {
-            if(context.user){
-                const userData = await User.findOne({_id:context.user._id}).select('-__v -password')
+            if (context.user) {
+                const userData = await User.findOne({ _id: context.user._id }).select('-__v -password')
                 return userData
             }
         }
     },
     Mutation: {
-        addUser: async (parent, args) => {
+        addUser: async (parent, args, context) => {
+            console.log(context)
             const user = await User.create(args);
-            const token = signToken(user) 
-            return {token, user}
+            const token = signToken(user)
+            return { token, user }
         },
         login: async (parent, args) => {
-            const user = await User.findOne({email:args.email})
+            const user = await User.findOne({ email: args.email })
             if (!user) {
                 throw AuthenticationError
             }
@@ -25,8 +26,8 @@ const resolvers = {
             if (!corrrectPassword) {
                 throw AuthenticationError
             }
-            const token = signToken(user) 
-            return {token, user}
+            const token = signToken(user)
+            return { token, user }
         },
         saveBook: async (parent, args, context) => {
             if (context.user) {
@@ -34,8 +35,8 @@ const resolvers = {
                     { _id: context.user._id },
                     { $push: { savedBooks: args.bookData } },
                     { new: true }
-                  );
-                  return updatedUser;
+                );
+                return updatedUser;
             }
             throw AuthenticationError
         },
@@ -43,15 +44,16 @@ const resolvers = {
             if (context.user) {
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: context.user._id },
-                    { $pull: { savedBooks: args.bookData } },
+                    { $pull: { savedBooks: args.bookId } },
                     { new: true }
-                  );
-                  return updatedUser;
+                );
+                return updatedUser;
             }
             throw AuthenticationError
         }
-    }}
-        
-    
-    module.exports = resolvers
+    }
+}
+
+
+module.exports = resolvers
 
